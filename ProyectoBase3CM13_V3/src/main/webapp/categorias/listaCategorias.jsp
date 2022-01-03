@@ -28,7 +28,7 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                <a class="nav-link active" aria-current="page" href="index.jsp">Home</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="CategoriaServlet?accion=listaDeCategorias">Lista de Categorias</a>
@@ -86,7 +86,7 @@
                                         <c:out value="${dto.entidad.nombreCategoria}"/>
                                     </td>
                                     <td>
-                                        <c:out value="${dto.entidad.descripciónCategoria}"/>
+                                        <c:out value="${dto.entidad.descripcionCategoria}"/>
                                     </td>
                                     <td>
                                         <a href="CategoriaServlet?accion=eliminar&id=<c:out value="${dto.entidad.idCategoria}"/>" class="btn btn-outline-danger">Eliminar</a>

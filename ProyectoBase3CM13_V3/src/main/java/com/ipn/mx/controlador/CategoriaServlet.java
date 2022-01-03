@@ -67,14 +67,18 @@ public class CategoriaServlet extends HttpServlet {
                         if (accion.equals("guardar")) {
                             almacenarCategoria(request, response);
                         } else {
-                            if (accion.equals("ver")) {
-                                mostrarCategoria(request, response);
+                            if (accion.equals("guardarNuevo")) {
+                                almacenarCategoriaActualizada(request, response);
                             } else {
-                                if (accion.equals("verReporte")) {
-                                    mostrarReporte(request, response);
+                                if (accion.equals("ver")) {
+                                    mostrarCategoria(request, response);
                                 } else {
-                                    if (accion.equals("graficar")) {
-                                        mostrarGrafica(request, response);
+                                    if (accion.equals("verReporte")) {
+                                        mostrarReporte(request, response);
+                                    } else {
+                                        if (accion.equals("graficar")) {
+                                            mostrarGrafica(request, response);
+                                        }
                                     }
                                 }
                             }
@@ -162,7 +166,7 @@ public class CategoriaServlet extends HttpServlet {
         CategoriaDAO dao = new CategoriaDAO();
         CategoriaDTO dto = new CategoriaDTO();
         dto.getEntidad().setIdCategoria(Integer.parseInt(request.getParameter("id")));
-        RequestDispatcher vista = request.getRequestDispatcher("/categorias/categoriasForm.jsp");
+        RequestDispatcher vista = request.getRequestDispatcher("/categorias/categoriaFormAct.jsp");
         try {
             dto = dao.read(dto);
             request.setAttribute("categoria", dto);
@@ -189,12 +193,27 @@ public class CategoriaServlet extends HttpServlet {
     private void almacenarCategoria(HttpServletRequest request, HttpServletResponse response) {
         CategoriaDAO dao = new CategoriaDAO();
         CategoriaDTO dto = new CategoriaDTO();
-        
+
         dto.getEntidad().setNombreCategoria(request.getParameter("txtNombreCategoria"));
         dto.getEntidad().setDescripcionCategoria(request.getParameter("txtDescripcionCategoria"));
         try {
             dao.create(dto);
             request.setAttribute("mensaje", "Categoría agregada con exito");
+            listaDeCategorias(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void almacenarCategoriaActualizada(HttpServletRequest request, HttpServletResponse response) {
+        CategoriaDAO dao = new CategoriaDAO();
+        CategoriaDTO dto = new CategoriaDTO();
+        dto.getEntidad().setNombreCategoria(request.getParameter("txtNombreCategoria"));
+        dto.getEntidad().setDescripcionCategoria(request.getParameter("txtDescripcionCategoria"));
+
+        try {
+            dao.create(dto);
+            request.setAttribute("mensaje", "Categoría actualizada con exito");
             listaDeCategorias(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,29 +228,30 @@ public class CategoriaServlet extends HttpServlet {
             byte[] b = JasperRunManager.runReportToPdf(reporte.getPath(), null, dao.conectar());
             response.setContentType("application/pdf");
             response.setContentLength(b.length);
-            
-            sos.write(b,0,b.length);
+
+            sos.write(b, 0, b.length);
             sos.flush();
             sos.close();
-            
+
         } catch (IOException | JRException ex) {
             Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void mostrarGrafica(HttpServletRequest request, HttpServletResponse response) {
-        JFreeChart grafica = ChartFactory.createPieChart("Productos por categoria", 
+        JFreeChart grafica = ChartFactory.createPieChart("Productos por categoria",
                 obtenerGraficaProductosPorCategoria(), true, true, Locale.getDefault());
         String archivo = getServletConfig().getServletContext().getRealPath("/grafica.png");
         try {
-            ChartUtils.saveChartAsPNG(new File(archivo), grafica, 500,500);
+            ChartUtils.saveChartAsPNG(new File(archivo), grafica, 500, 500);
             RequestDispatcher vista = request.getRequestDispatcher("grafica.jsp");
             vista.forward(request, response);
         } catch (IOException | ServletException ex) {
             Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private PieDataset obtenerGraficaProductosPorCategoria(){
+
+    private PieDataset obtenerGraficaProductosPorCategoria() {
         DefaultPieDataset dsPie = new DefaultPieDataset();
         GraficaDAO dao = new GraficaDAO();
         try {
@@ -244,6 +264,6 @@ public class CategoriaServlet extends HttpServlet {
             Logger.getLogger(CategoriaServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         return dsPie;
-        
+
     }
 }

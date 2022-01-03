@@ -55,7 +55,7 @@
                                    placeholder="Nombre Categoria"
                                    required="required"
                                    maxlength="50"
-                                   value="<c:out value="${categoria.entidad.nomreCategoria}"/>"
+                                   value="<c:out value="${categoria.entidad.nombreCategoria}"/>"
                                    class="form-control"
                                    />
                         </div>

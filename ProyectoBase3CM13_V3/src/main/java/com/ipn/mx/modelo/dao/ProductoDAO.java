@@ -33,7 +33,7 @@ public class ProductoDAO {
     
      public Connection conectar() {
         String user = "postgres";
-        String pwd = "2depastor";
+        String pwd = "280601";
         String url = "jdbc:postgresql://localhost:5432/Base3CM13";
         String pgDriver = "org.postgresql.Driver";
         try {
